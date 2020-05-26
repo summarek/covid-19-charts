@@ -3,8 +3,20 @@ const cors = require("cors")({ origin: true });
 const cheerio = require("cheerio");
 const getUrls = require("get-urls");
 const fetch = require("node-fetch");
-const { request, response } = require("express");
 console.log("dzialam");
+
+let date = new Date();
+
+const getTime = (date) => {
+  return {
+    hour: date.getHours(),
+    minute: date.getMinutes(),
+    day: date.getDate(),
+    month: date.getMonth() + 1,
+    year: date.getFullYear(),
+  };
+};
+let requests = [];
 
 const scrapeMetatags = async () => {
   const res = await fetch(
@@ -12,27 +24,43 @@ const scrapeMetatags = async () => {
   );
   const html = await res.text();
   const $ = cheerio.load(html);
+  console.log("update");
 
   requests = [];
-
   for (i = 1; i <= 18; i++) {
     requests.push({
-      nazwa: $(`.ppcUXd > tr:nth-child(${i}) > .l3HOY:nth-child(1)`).text(),
-      potwierdzone: $(
-        `.ppcUXd > tr:nth-child(${i}) > .l3HOY:nth-child(2)`
-      ).text(),
-      przypadkiNaMln: $(
-        `.ppcUXd > tr:nth-child(${i}) > .l3HOY:nth-child(3)`
-      ).text(),
-      ozdrowienia: $(
-        `.ppcUXd > tr:nth-child(${i}) > .l3HOY:nth-child(4)`
-      ).text(),
-      zgony: $(`.ppcUXd > tr:nth-child(${i}) > .l3HOY:nth-child(5)`).text(),
+      nazwa:
+        $(`.ppcUXd > tr:nth-child(${i}) > .l3HOY:nth-child(1)`)
+          .text()
+          .split(" ")[0] == "Województwo" ||
+        $(`.ppcUXd > tr:nth-child(${i}) > .l3HOY:nth-child(1)`)
+          .text()
+          .split(" ")[0] == "województwo"
+          ? $(`.ppcUXd > tr:nth-child(${i}) > .l3HOY:nth-child(1)`)
+              .text()
+              .split(" ")
+              .slice(1)
+              .join("")
+          : $(`.ppcUXd > tr:nth-child(${i}) > .l3HOY:nth-child(1)`).text(),
+      potwierdzone: $(`.ppcUXd > tr:nth-child(${i}) > .l3HOY:nth-child(2)`)
+        .text()
+        .replace(/\s/g, ""),
+      przypadkiNaMln: $(`.ppcUXd > tr:nth-child(${i}) > .l3HOY:nth-child(3)`)
+        .text()
+        .replace(/\s/g, ""),
+      ozdrowienia: $(`.ppcUXd > tr:nth-child(${i}) > .l3HOY:nth-child(4)`)
+        .text()
+        .replace(/\s/g, ""),
+      zgony: $(`.ppcUXd > tr:nth-child(${i}) > .l3HOY:nth-child(5)`)
+        .text()
+        .replace(/\s/g, ""),
+      czas: getTime(new Date()),
     });
   }
-
-  return requests;
 };
+scrapeMetatags();
+setInterval(scrapeMetatags, 1800 * 1000);
+
 const getCircularReplacer = () => {
   const seen = new WeakSet();
   return (key, value) => {
@@ -51,8 +79,6 @@ var requestOptions = {
 };
 exports.scraper = functions.https.onRequest((request, response) => {
   cors(request, response, async () => {
-    const data = await scrapeMetatags();
-    response.send(JSON.stringify(data, getCircularReplacer()));
-    JSON.stringify(data.data, getCircularReplacer());
+    response.send(JSON.stringify(requests, getCircularReplacer()));
   });
 });
