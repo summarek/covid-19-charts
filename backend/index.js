@@ -21,7 +21,7 @@ const getTime = (date) => {
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
 
 mongoose.connection.on("error", (err) => {
-  logError(err);
+  console.log(err);
 });
 
 const db = mongoose.connection;
@@ -53,6 +53,8 @@ axios
   .then(function (response) {
     //console.log(response.data);
     response.data.forEach(async (el, index) => {
+      console.log(index);
+
       Set.updateOne(
         {
           place: el.nazwa,
