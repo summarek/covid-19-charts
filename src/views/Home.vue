@@ -4,20 +4,23 @@
     <div class="chart"><p>chart.js</p></div>
     <div class="options">
       <div class="legend">
-        <p>Województwo:</p>
+        <p>Lokalizacje:</p>
         <p>Zakres czasowy:</p>
       </div>
       <div class="options-grid">
         <div class="place-options">
           <div v-for="option in options" :key="option.id">
-            <label>{{ option.label }}</label>
-            <input
-              type="checkbox"
-              v-model="item.option"
-              :id="'category_' + option.id"
-              :value="option.label"
-              @change="logger"
-            />
+            <label class="container"
+              >{{ option.label }}
+              <input
+                type="checkbox"
+                v-model="item.option"
+                :id="'category_' + option.id"
+                :value="option.label"
+                @change="logger"
+              />
+              <span class="checkmark"></span>
+            </label>
           </div>
         </div>
         <div class="time-options"></div>
@@ -91,17 +94,79 @@ $fontSize: 32;
 .options-grid {
   display: flex;
   .place-options {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-gap: 14px;
     width: 80%;
-    div {
-      margin: 0.3rem;
-      margin-left: 0;
-    }
+    grid-template-columns: repeat(auto-fill, 200px);
+
+    // div {
+    //   flex: 1 0 21%;
+    // }
   }
   .time-options {
     display: flex;
     width: 20%;
   }
+}
+
+//checkbox style
+.container {
+  display: block;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  margin-left: 5px;
+  height: 25px;
+  width: 25px;
+  background-color: $btnBg;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .checkmark {
+  background-color: $btnBg;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid $mainText;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 </style>
