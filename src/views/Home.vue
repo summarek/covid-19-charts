@@ -23,7 +23,30 @@
             </label>
           </div>
         </div>
-        <div class="time-options"></div>
+        <div class="time-options">
+          <div class="fromDate">
+            <p>od:</p>
+            <select v-model="fromDate">
+              <option
+                v-for="date in dateOptions"
+                :key="date._id"
+                :value="date"
+                >{{ date }}</option
+              >
+            </select>
+          </div>
+          <div class="toDate">
+            <p>od:</p>
+            <select v-model="toDate">
+              <option
+                v-for="date in dateOptions"
+                :key="date._id"
+                :value="date"
+                >{{ date }}</option
+              >
+            </select>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -59,12 +82,40 @@ export default {
       item: {
         option: [],
       },
+      fromDate: "",
+      toDate: "",
+      mainData: [],
+      dateOptions: [],
     };
   },
   methods: {
     logger: function() {
       console.log(this.item.option);
+
+      console.log("ej");
+
+      console.log(this.mainData);
+
+      console.log(this.fromDate);
+      console.log(this.toDate);
     },
+  },
+  mounted() {
+    fetch("http://localhost:3000/")
+      .then((response) => response.json())
+      .then((data) => {
+        this.mainData = data;
+        data.forEach((el) => {
+          if (
+            this.dateOptions.includes(
+              el.dzien + "." + el.miesiac + "." + el.rok
+            ) == false
+          ) {
+            console.log(el.dzien + "." + el.miesiac + "." + el.rok);
+            this.dateOptions.push(el.dzien + "." + el.miesiac + "." + el.rok);
+          }
+        });
+      });
   },
 };
 </script>
@@ -110,7 +161,25 @@ $fontSize: 32;
   }
   .time-options {
     display: flex;
-    width: 20%;
+    // align-items: center;
+    // justify-content: center;
+    flex-direction: column;
+    min-width: 25%;
+    @media (max-width: 568px) {
+      min-width: 40%;
+    }
+    div {
+      width: 100%;
+      display: flex;
+      margin: 1rem 1rem 1rem 0;
+      select {
+        padding: 0.3rem;
+        width: 60%;
+        margin-left: 20px;
+        border: none;
+        background-color: $btnBg;
+      }
+    }
   }
 }
 
@@ -138,6 +207,7 @@ $fontSize: 32;
   height: 25px;
   width: 25px;
   background-color: $btnBg;
+  transition: all 0.3s ease;
 }
 
 /* On mouse-over, add a grey background color */
@@ -155,15 +225,19 @@ $fontSize: 32;
   content: "";
   position: absolute;
   display: none;
+  transition: all 1s ease;
 }
 
 /* Show the checkmark when checked */
 .container input:checked ~ .checkmark:after {
   display: block;
+  transition: all 1s ease;
 }
 
 /* Style the checkmark/indicator */
 .container .checkmark:after {
+  transition: all 1s ease;
+
   left: 9px;
   top: 0px;
   width: 5px;
