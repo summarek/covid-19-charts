@@ -5,7 +5,7 @@
     <div class="options">
       <div class="legend">
         <p>Lokalizacje:</p>
-        <p>Zakres czasowy:</p>
+        <p id="time-legend">Zakres czasowy:</p>
       </div>
       <div class="options-grid">
         <div class="place-options">
@@ -89,7 +89,11 @@ $fontSize: 32;
 .legend {
   display: flex;
   justify-content: space-between;
+  font-size: 1.4rem;
   padding: 1rem 0 1rem 0;
+  #time-legend {
+    min-width: 20%;
+  }
 }
 .options-grid {
   display: flex;
@@ -99,9 +103,10 @@ $fontSize: 32;
     width: 80%;
     grid-template-columns: repeat(auto-fill, 200px);
 
-    // div {
-    //   flex: 1 0 21%;
-    // }
+    div:last-child,
+    :nth-last-child(2) {
+      font-weight: 500;
+    }
   }
   .time-options {
     display: flex;
@@ -160,9 +165,9 @@ $fontSize: 32;
 /* Style the checkmark/indicator */
 .container .checkmark:after {
   left: 9px;
-  top: 5px;
+  top: 0px;
   width: 5px;
-  height: 10px;
+  height: 20px;
   border: solid $mainText;
   border-width: 0 3px 3px 0;
   -webkit-transform: rotate(45deg);

@@ -6,11 +6,11 @@
         <router-link to="/about">O projekcie</router-link>
       </div>
       <a id="me" target="blank" href="https://github.com/summarek"
-        >robert skrzyniecki</a
+        >robert skrzyniecki <br />
+        Projekt na praktyki zadodowe 2020</a
       >
     </div>
     <router-view />
-    <p id="main-bottom-text">Projekt na praktyki zadodowe 2020</p>
   </div>
 </template>
 
@@ -45,13 +45,8 @@ body {
   justify-content: space-between;
   #me {
     font-weight: 200;
+    text-align: right;
   }
-}
-#main-bottom-text {
-  font-weight: 200;
-  position: absolute;
-  right: 1rem;
-  bottom: 1rem;
 }
 
 //link animacja
