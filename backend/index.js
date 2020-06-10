@@ -50,7 +50,7 @@ const dataSet = mongoose.Schema({
 let Set = mongoose.model("dataSet", dataSet);
 
 axios
-  .get("http://localhost:5001/projekt-praktyki-9108b/us-central1/scraper")
+  .get("https://us-central1-projekt-praktyki-9108b.cloudfunctions.net/scraper")
   .then(function(response) {
     //console.log(response.data);
     response.data.forEach(async (el, index) => {
@@ -85,7 +85,9 @@ axios
 
 setInterval(() => {
   axios
-    .get("http://localhost:5001/projekt-praktyki-9108b/us-central1/scraper")
+    .get(
+      "https://us-central1-projekt-praktyki-9108b.cloudfunctions.net/scraper"
+    )
     .then(function(response) {
       //console.log(response.data);
       response.data.forEach(async (el, index) => {
@@ -123,7 +125,7 @@ app.get("/", function(req, res) {
   });
 });
 
-app.listen(3000);
+app.listen(3001);
 
 // Author.updateOne(
 //   { authorNicknameId: 0 },
