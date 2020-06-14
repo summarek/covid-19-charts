@@ -52,6 +52,7 @@
               >
             </select>
           </div>
+
           <div class="toDate">
             <p>do:</p>
             <select @change="logger" v-model="toDate">
@@ -149,11 +150,13 @@ export default {
         helpme[index].push(el.place);
       });
       // console.log(helpme);
-
+      function compareNumbers(a, b) {
+        return a - b;
+      }
       for (let i = 0; i < this.item.option.length; i++) {
         datasetsArray.push({
           label: helpme[i][helpme[i].length - 1],
-          data: helpme[i].slice(0, helpme.length),
+          data: helpme[i].slice(0, helpme.length).sort(compareNumbers),
           borderWidth: 2,
           borderColor: this.options.filter(function(e) {
             return (
@@ -198,7 +201,7 @@ export default {
             },
             layout: {
               padding: {
-                left: 50,
+                left: 0,
                 right: 0,
                 bottom: 0,
                 top: 0,
@@ -247,6 +250,7 @@ export default {
         });
         //redraw the chart
       }
+      console.log(datasetsArray);
     },
   },
   mounted() {
@@ -268,6 +272,12 @@ export default {
             this.dateOptions.push(el.dzien + "." + el.miesiac + "." + el.rok);
           }
         });
+        console.log(this.dateOptions.indexOf("2.6.2020"));
+        this.dateOptions[5] = ["31.5.2020", this.dateOptions[5], "2.6.2020"];
+        this.dateOptions[18] = [];
+        this.dateOptions[19] = [];
+        this.dateOptions = this.dateOptions.flat();
+
         this.updateChart();
       });
   },
