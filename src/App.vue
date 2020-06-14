@@ -33,6 +33,7 @@ $fontSize: 32;
   outline: none;
   a {
     text-decoration: none;
+    color: $mainText;
     position: relative;
   }
 }

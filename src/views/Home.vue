@@ -1,7 +1,24 @@
 <template>
   <div class="home">
     <h1 class="main-title">Zachorowania na covid-19 w Polsce</h1>
-    <div class="chart"><p>chart.js</p></div>
+    <div class="chart">
+      <canvas id="myChart"></canvas>
+      <div class="radioOptions">
+        <div v-for="option in radioChoice" :key="option.id">
+          <label class="container"
+            >{{ option.label }}
+            <input
+              type="radio"
+              v-model="radio.option"
+              :id="'category_' + option.id"
+              :value="option.label"
+              @change="logger"
+            />
+            <span class="checkmark radioOption"></span>
+          </label>
+        </div>
+      </div>
+    </div>
     <div class="options">
       <div class="legend">
         <p>Lokalizacje:</p>
@@ -26,22 +43,22 @@
         <div class="time-options">
           <div class="fromDate">
             <p>od:</p>
-            <select v-model="fromDate">
+            <select @change="logger" v-model="fromDate">
               <option
-                v-for="date in dateOptions"
+                v-for="(date, index) in dateOptions"
                 :key="date._id"
-                :value="date"
+                :value="index"
                 >{{ date }}</option
               >
             </select>
           </div>
           <div class="toDate">
-            <p>od:</p>
-            <select v-model="toDate">
+            <p>do:</p>
+            <select @change="logger" v-model="toDate">
               <option
-                v-for="date in dateOptions"
+                v-for="(date, index) in dateOptions"
                 :key="date._id"
-                :value="date"
+                :value="index"
                 >{{ date }}</option
               >
             </select>
@@ -60,48 +77,184 @@ export default {
   data: function() {
     return {
       options: [
-        { id: 0, label: "dolnośląskie" },
-        { id: 1, label: "kujawsko-pomorskie" },
-        { id: 2, label: "lubelskie" },
-        { id: 3, label: "lubuskie" },
-        { id: 4, label: "łódzkie" },
-        { id: 5, label: "małopolskie" },
-        { id: 6, label: "mazowieckie" },
-        { id: 7, label: "opolskie" },
-        { id: 8, label: "podkarpackie" },
-        { id: 9, label: "podlaskie" },
-        { id: 10, label: "pomorskie" },
-        { id: 11, label: "śląskie" },
-        { id: 12, label: "świętokrzyskie" },
-        { id: 13, label: "warmińsko-mazurskie" },
-        { id: 14, label: "wielkopolskie" },
-        { id: 15, label: "zachodniopomorskie" },
-        { id: 16, label: "cała Polska" },
-        { id: 17, label: "cały świat" },
+        { id: 0, label: "dolnośląskie", color: "#123456" },
+        { id: 1, label: "kujawsko-pomorskie", color: "#123456" },
+        { id: 2, label: "lubelskie", color: "#123456" },
+        { id: 3, label: "lubuskie", color: "#123456" },
+        { id: 4, label: "łódzkie", color: "#123456" },
+        { id: 5, label: "małopolskie", color: "#123456" },
+        { id: 6, label: "mazowieckie", color: "#123456" },
+        { id: 7, label: "opolskie", color: "#123456" },
+        { id: 8, label: "podkarpackie", color: "#123456" },
+        { id: 9, label: "podlaskie", color: "#123456" },
+        { id: 10, label: "pomorskie", color: "#123456" },
+        { id: 11, label: "śląskie", color: "#123456" },
+        { id: 12, label: "świętokrzyskie", color: "#123456" },
+        { id: 13, label: "warmińsko-mazurskie", color: "#123456" },
+        { id: 14, label: "wielkopolskie", color: "#123456" },
+        { id: 15, label: "zachodniopomorskie", color: "#123456" },
+        { id: 16, label: "polska", color: "#123456" },
+        { id: 17, label: "cały świat", color: "#123456" },
       ],
       item: {
         option: [],
       },
-      fromDate: "",
-      toDate: "",
+      fromDate: 0,
+      toDate: 0,
       mainData: [],
       dateOptions: [],
+      radioChoice: [
+        { id: 0, label: "potwierdzone" },
+        { id: 1, label: "zgony" },
+      ],
+      radio: {
+        option: ["potwierdzone"],
+      },
+      massPopChart: {},
+      stTime: 0,
     };
   },
   methods: {
     logger: function() {
-      console.log(this.item.option);
+      this.updateChart();
+    },
+    updateChart: function(dataSets, labels, strings) {
+      let globalLabels = this.dateOptions.slice(this.fromDate, this.toDate + 1);
 
-      console.log("ej");
+      let datasetsArray = [];
+      let tempArr = [];
 
-      console.log(this.mainData);
+      this.mainData.map((element) => {
+        if (this.item.option.includes(element.place.toLowerCase())) {
+          globalLabels.forEach((el) => {
+            if (
+              el ==
+              element.dzien + "." + element.miesiac + "." + element.rok
+            ) {
+              tempArr.push(element);
+            }
+          });
+        }
+      });
 
-      console.log(this.fromDate);
-      console.log(this.toDate);
+      var helpme = [];
+      tempArr.forEach((el, index) => {
+        helpme[index] = tempArr
+          .map((element) =>
+            element.place.toLowerCase() == el.place.toLowerCase()
+              ? element[this.radio.option]
+              : null
+          )
+          .filter((el) => el != null);
+        helpme[index].push(el.place);
+      });
+      // console.log(helpme);
+
+      for (let i = 0; i < this.item.option.length; i++) {
+        datasetsArray.push({
+          label: helpme[i][helpme[i].length - 1],
+          data: helpme[i].slice(0, helpme.length),
+          borderWidth: 2,
+          borderColor: this.options.filter(function(e) {
+            return (
+              e.label.toLowerCase() ==
+              helpme[i][helpme[i].length - 1].toLowerCase()
+            );
+          })[0].color,
+          hoverBorderWidth: 3,
+          hoverBorderColor: "#fff",
+          fill: false,
+        });
+      }
+
+      let myChart = document.getElementById("myChart").getContext("2d");
+      // Global Options
+      Chart.defaults.global.defaultFontFamily = "poppins";
+      Chart.defaults.global.defaultFontSize = 18;
+      Chart.defaults.global.defaultFontColor = "#eee";
+
+      if (this.stTime == 0) {
+        this.stTime = 1;
+        this.massPopChart = new Chart(myChart, {
+          type: "line", // bar, horizontalBar, pie, line, doughnut, radar, polarArea
+          data: {
+            labels: globalLabels,
+            datasets: datasetsArray,
+          },
+          options: {
+            responsive: true,
+            fill: false,
+            title: {
+              display: true,
+              text: this.radio.option,
+              fontSize: 25,
+            },
+            legend: {
+              display: true,
+              position: "right",
+              labels: {
+                fontColor: "#fff",
+              },
+            },
+            layout: {
+              padding: {
+                left: 50,
+                right: 0,
+                bottom: 0,
+                top: 0,
+              },
+            },
+            tooltips: {
+              enabled: true,
+            },
+          },
+        });
+      } else {
+        this.massPopChart.destroy();
+        this.massPopChart = new Chart(myChart, {
+          type: "line", // bar, horizontalBar, pie, line, doughnut, radar, polarArea
+          data: {
+            labels: globalLabels,
+            datasets: datasetsArray,
+          },
+          options: {
+            responsive: true,
+            fill: false,
+            title: {
+              display: true,
+              text: this.radio.option,
+              fontSize: 25,
+            },
+            legend: {
+              display: true,
+              position: "bottom",
+              labels: {
+                fontColor: "#fff",
+              },
+            },
+            layout: {
+              padding: {
+                left: 0,
+                right: 0,
+                bottom: 0,
+                top: 0,
+              },
+            },
+            tooltips: {
+              enabled: true,
+            },
+          },
+        });
+        //redraw the chart
+      }
     },
   },
   mounted() {
-    fetch("http://localhost:3000/")
+    this.options.forEach((el) => {
+      el.color = "#" + (((1 << 24) * Math.random()) | 0).toString(16);
+    });
+
+    fetch("http://142.93.161.60:3001/")
       .then((response) => response.json())
       .then((data) => {
         this.mainData = data;
@@ -111,10 +264,11 @@ export default {
               el.dzien + "." + el.miesiac + "." + el.rok
             ) == false
           ) {
-            console.log(el.dzien + "." + el.miesiac + "." + el.rok);
+            //console.log(el.dzien + "." + el.miesiac + "." + el.rok);
             this.dateOptions.push(el.dzien + "." + el.miesiac + "." + el.rok);
           }
         });
+        this.updateChart();
       });
   },
 };
@@ -134,8 +288,21 @@ $fontSize: 32;
   background-color: $btnBg;
   height: 60vh;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
+  flex-direction: column;
+  @media (min-width: 1300px) {
+    flex-direction: initial;
+  }
+}
+
+#myChart {
+  max-width: 1019px;
+  max-height: 509px;
+  @media (max-width: 768px) {
+    max-width: 100% !important;
+    max-height: 100% !important;
+  }
 }
 .legend {
   display: flex;
@@ -208,6 +375,12 @@ $fontSize: 32;
   width: 25px;
   background-color: $btnBg;
   transition: all 0.3s ease;
+}
+.radioOption {
+  background-color: #212121;
+}
+.container input:checked ~ .radioOption {
+  background-color: #212121 !important;
 }
 
 /* On mouse-over, add a grey background color */

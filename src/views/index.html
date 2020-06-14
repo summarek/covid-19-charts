@@ -1,6 +1,45 @@
-<template>
-  <div class="about">
-    <h1 id="text"></h1>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projekt</title>
+  <style>
+    html {
+      background-color: rgb(44, 43, 43);
+      color: white;
+      font-size: 1.5rem;
+      font-family: monospace;
+      padding: 0 2rem 0 2rem;
+
+    }
+
+    h1,h3 {
+      text-align: center;
+    }
+
+    ol {
+      list-style-type: none;
+    }
+
+    ul {
+      list-style-type: disc;
+    }
+
+    h1,
+    p {
+      color: #fff;
+
+    }
+    a{
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <h1 id="text"></h1>
   <br>
     <h3>Aplikacja internetowa podsumowująca aktualne zachorowania na covid-19 w Polsce</h3>
 
@@ -16,7 +55,7 @@
           <p>Koncepcja projektu</p>
         </li>
         <li>
-          <p>Graf z wybranymi technologiami do projektu - <a href="../assets/graf.png" target="blank">KLIK</a></p>
+          <p>Graf z wybranymi technologiami do projektu - <a href="graf.png" target="blank">KLIK</a></p>
         </li>
         <li>
           <p>Webscraping w celu pozyskania aktualnych danych z google news</p>
@@ -32,7 +71,7 @@
              baza danych rośnie o 18 dokumentów (16 wojewódźtw + cały kraj + cały świat)</p>
         </li>
         <li><p>Wrzucenie aplikacji w node.js na VPS</p></li>
-        <li><p>API posiada jeden endpoint - / - który na zapytanie http zwraca wszystkie dokumenty w bazie danych w formacie JSON - <a href="http://142.93.161.60:3001/" target="blank">KLIK!</a></p></li>
+        <li><p>API posiada jeden endpoint - / - który na zapytanie http zwraca wszystkie dokumenty w bazie danych w formacie JSON - <a href="http://142.93.161.60:3000/" target="blank">KLIK!</a></p></li>
       </ul>
       </p>
       <br>
@@ -56,14 +95,8 @@
     </li>
   </ol>
   </p>
-  </div>
-</template>
-
-<script>
-export default {
-  mounted(){
-    console.log("about");
-        const txt = "Robert Skrzyniecki - Projekt praktyki zawodowe";
+  <script>
+    const txt = "Robert Skrzyniecki - Projekt praktyki zawodowe";
     const speed = 30;
 
     let i = 0;
@@ -75,38 +108,7 @@ export default {
       }
     }
     typeWriter();
-  }
-}
-</script>
+  </script>
+</body>
 
-<style >
-
-
-.about {
-  color: white;
-  font-size: 1.5rem;
-  font-family: monospace;
-  padding: 1rem;
-}
-
-h1,
-h3 {
-  text-align: center;
-}
-
-ol {
-  list-style-type: none;
-}
-
-ul {
-  list-style-type: disc;
-}
-
-h1,
-p {
-  color: #fff;
-}
-a {
-  color: white;
-}
-</style>
+</html>
