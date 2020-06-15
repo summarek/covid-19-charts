@@ -109,7 +109,7 @@ export default {
         { id: 1, label: "zgony" },
       ],
       radio: {
-        option: ["potwierdzone"],
+        option: "potwierdzone",
       },
       massPopChart: {},
       stTime: 0,
@@ -272,6 +272,8 @@ export default {
             this.dateOptions.push(el.dzien + "." + el.miesiac + "." + el.rok);
           }
         });
+        this.toDate = this.dateOptions.length - 1;
+
         console.log(this.dateOptions.indexOf("2.6.2020"));
         this.dateOptions[5] = ["31.5.2020", this.dateOptions[5], "2.6.2020"];
         this.dateOptions[18] = [];
