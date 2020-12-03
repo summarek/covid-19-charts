@@ -254,15 +254,16 @@ export default {
     },
   },
   mounted() {
+
+    var dataJson = require('../data.json')
+    console.log(dataJson);
+
     this.options.forEach((el) => {
       el.color = "#" + (((1 << 24) * Math.random()) | 0).toString(16);
     });
-
-    fetch("http://142.93.161.60:3001/")
-      .then((response) => response.json())
-      .then((data) => {
-        this.mainData = data;
-        data.forEach((el) => {
+    
+        this.mainData = dataJson;
+        dataJson.forEach((el) => {
           if (
             this.dateOptions.includes(
               el.dzien + "." + el.miesiac + "." + el.rok
@@ -281,8 +282,7 @@ export default {
         this.dateOptions = this.dateOptions.flat();
 
         this.updateChart();
-      });
-  },
+  }
 };
 </script>
 <style lang="scss" scoped>
